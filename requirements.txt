@@ -1,6 +1,7 @@
 streamlit
 numpy
-pillow
+h5py
 matplotlib
 opencv-python-headless
-h5py
+pandas
+pillow
