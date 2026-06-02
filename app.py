@@ -96,7 +96,7 @@ st.sidebar.title(" Demo Settings")
 
 model_choice = st.sidebar.selectbox(
     "Choose model",
-    ["Compare All", "U-Net", "SAM", "MedSAM-Optimized"]
+    ["Compare All", "U-Net", "SAM", "MedSAM"]
 )
 
 show_overlay = st.sidebar.checkbox("Show overlay", value=True)
@@ -105,7 +105,7 @@ st.sidebar.markdown("---")
 st.sidebar.subheader(" Notebook Results")
 
 results_df = pd.DataFrame({
-    "Model": ["U-Net", "MedSAM-Optimized", "SAM"],
+    "Model": ["U-Net", "MedSAM", "SAM"],
     "Dice": [0.7583, 0.7338, 0.6304],
     "IoU": [0.6720, 0.6143, 0.4992],
     "Training Type": [
@@ -363,9 +363,4 @@ else:
 
     st.markdown("---")
     st.markdown('<div class="section-title"> Final Notebook Model Comparison</div>', unsafe_allow_html=True)
-
     st.dataframe(results_df, use_container_width=True, hide_index=True)
-
-    
-        unsafe_allow_html=True
-    )
