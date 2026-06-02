@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-from PIL import Image
+import h5py
 import matplotlib.pyplot as plt
 
 st.set_page_config(
@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 st.title("Brain Tumor Segmentation Demo")
-st.write("U-Net, SAM and MedSAM comparison demo.")
+st.write("BraTS H5 slice-based demo for U-Net, SAM and MedSAM.")
 
 st.sidebar.header("Settings")
 
@@ -18,65 +18,118 @@ model_choice = st.sidebar.selectbox(
     ["U-Net", "SAM", "MedSAM", "Compare All"]
 )
 
-uploaded_image = st.file_uploader(
-    "Upload an MRI image",
-    type=["png", "jpg", "jpeg", "npy"]
+uploaded_h5 = st.file_uploader(
+    "Upload a BraTS H5 file",
+    type=["h5", "hdf5"]
 )
 
-uploaded_mask = st.file_uploader(
-    "Optional: Upload ground-truth mask",
-    type=["png", "jpg", "jpeg", "npy"]
-)
+def normalize_image(image):
+    image = image.astype(np.float32)
+    min_val = np.min(image)
+    max_val = np.max(image)
 
-def load_file(uploaded_file):
-    if uploaded_file.name.endswith(".npy"):
-        return np.load(uploaded_file)
+    if max_val - min_val == 0:
+        return image
+
+    return (image - min_val) / (max_val - min_val)
+
+def create_dummy_prediction(mask):
+    """
+    Temporary prediction.
+    For now, we use the ground-truth mask shape only to test the interface.
+    Later, this part will be replaced with U-Net, SAM and MedSAM predictions.
+    """
+    prediction = np.zeros_like(mask, dtype=np.uint8)
+
+    if np.max(mask) > 0:
+        prediction[mask > 0] = 1
+
+    return prediction
+
+if uploaded_h5 is not None:
+    with h5py.File(uploaded_h5, "r") as f:
+        st.subheader("H5 File Information")
+
+        keys = list(f.keys())
+        st.write("Available keys:", keys)
+
+        image = np.array(f["image"])
+        mask = np.array(f["mask"])
+
+    st.write("Image shape:", image.shape)
+    st.write("Mask shape:", mask.shape)
+
+    if image.ndim == 3:
+        channel_options = list(range(image.shape[-1]))
+        selected_channel = st.sidebar.selectbox(
+            "Select MRI channel",
+            channel_options,
+            index=0
+        )
+        image_2d = image[:, :, selected_channel]
     else:
-        image = Image.open(uploaded_file).convert("L")
-        return np.array(image)
+        image_2d = image
 
-def dummy_segmentation(image):
-    """
-    Temporary fake segmentation.
-    We will replace this later with U-Net, SAM and MedSAM.
-    """
-    h, w = image.shape[:2]
-    mask = np.zeros((h, w), dtype=np.uint8)
+    if mask.ndim == 3:
+        mask_2d = mask[:, :, 0]
+    else:
+        mask_2d = mask
 
-    center_h, center_w = h // 2, w // 2
-    radius_h, radius_w = h // 6, w // 6
+    image_2d = normalize_image(image_2d)
+    mask_2d = (mask_2d > 0).astype(np.uint8)
 
-    mask[
-        center_h - radius_h:center_h + radius_h,
-        center_w - radius_w:center_w + radius_w
-    ] = 255
+    st.subheader("Input Slice and Ground Truth")
 
-    return mask
+    col1, col2 = st.columns(2)
 
-if uploaded_image is not None:
-    image = load_file(uploaded_image)
+    with col1:
+        st.image(
+            image_2d,
+            caption="MRI Slice",
+            use_container_width=True,
+            clamp=True
+        )
 
-    st.subheader("Uploaded MRI Image")
-    st.image(image, caption="Input MRI Image", use_container_width=True)
-
-    if uploaded_mask is not None:
-        mask = load_file(uploaded_mask)
-        st.subheader("Ground Truth Mask")
-        st.image(mask, caption="Ground Truth Mask", use_container_width=True)
+    with col2:
+        st.image(
+            mask_2d * 255,
+            caption="Ground Truth Tumor Mask",
+            use_container_width=True,
+            clamp=True
+        )
 
     if st.button("Run Segmentation"):
         with st.spinner("Running segmentation..."):
-            prediction = dummy_segmentation(image)
+            prediction = create_dummy_prediction(mask_2d)
 
-        st.subheader("Predicted Tumor Mask")
-        st.image(prediction, caption=f"{model_choice} Prediction", use_container_width=True)
+        st.subheader("Segmentation Result")
 
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.metric("Selected Model", model_choice)
+            st.image(
+                image_2d,
+                caption="MRI Slice",
+                use_container_width=True,
+                clamp=True
+            )
 
         with col2:
-            st.metric("Status", "Demo prediction completed")
+            st.image(
+                mask_2d * 255,
+                caption="Ground Truth",
+                use_container_width=True,
+                clamp=True
+            )
+
+        with col3:
+            st.image(
+                prediction * 255,
+                caption=f"{model_choice} Prediction",
+                use_container_width=True,
+                clamp=True
+            )
+
+        st.success("H5 file loaded and demo segmentation completed.")
 else:
-    st.info("Please upload an MRI image to start.")
+    st.info("Please upload a BraTS H5 file to start.")
