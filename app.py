@@ -174,7 +174,7 @@ def dummy_prediction_from_gt(mask, model_name):
         kernel = np.ones((9, 9), np.uint8)
         pred = cv2.dilate(mask, kernel, iterations=1)
 
-    elif model_name == "MedSAM-Optimized":
+    elif model_name == "MedSAM":
         kernel = np.ones((5, 5), np.uint8)
         pred = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         pred = cv2.erode(pred, kernel, iterations=1)
@@ -285,7 +285,7 @@ else:
     with m4:
         st.metric("Keys", ", ".join(keys))
 
-    st.markdown('<div class="section-title">🧬 MRI Modalities</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> MRI Modalities</div>', unsafe_allow_html=True)
 
     channel_names = ["Channel 0", "Channel 1", "Channel 2", "Channel 3"]
 
@@ -328,7 +328,7 @@ else:
 
     if run_button:
         if model_choice == "Compare All":
-            models = ["U-Net", "SAM", "MedSAM-Optimized"]
+            models = ["U-Net", "SAM", "MedSAM"]
         else:
             models = [model_choice]
 
