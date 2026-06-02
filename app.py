@@ -122,7 +122,7 @@ st.sidebar.dataframe(
 )
 
 uploaded_h5 = st.file_uploader(
-    "📤 Upload a BraTS2020 H5 slice file",
+    " Upload a BraTS2020 H5 slice file",
     type=["h5", "hdf5"]
 )
 
@@ -204,7 +204,7 @@ def iou_score(gt, pred):
 if uploaded_h5 is None:
     st.info("Upload one BraTS2020 `.h5` slice file to start the interactive demo.")
 
-    st.markdown('<div class="section-title">📊 Final Notebook Results</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> Final Notebook Results</div>', unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
 
