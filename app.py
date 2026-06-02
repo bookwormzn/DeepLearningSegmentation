@@ -6,7 +6,6 @@ import cv2
 
 st.set_page_config(
     page_title="Brain Tumor Segmentation Demo",
-    page_icon="🧠",
     layout="wide"
 )
 
@@ -87,13 +86,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="main-title">🧠 Brain Tumor Segmentation Demo</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title"> Brain Tumor Segmentation Demo</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="subtitle">Interactive Streamlit demo for BraTS2020 H5 brain tumor slices using U-Net, SAM, and MedSAM comparison results.</div>',
     unsafe_allow_html=True
 )
 
-st.sidebar.title("🧪 Demo Settings")
+st.sidebar.title(" Demo Settings")
 
 model_choice = st.sidebar.selectbox(
     "Choose model",
@@ -103,7 +102,7 @@ model_choice = st.sidebar.selectbox(
 show_overlay = st.sidebar.checkbox("Show overlay", value=True)
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("📊 Notebook Results")
+st.sidebar.subheader(" Notebook Results")
 
 results_df = pd.DataFrame({
     "Model": ["U-Net", "MedSAM-Optimized", "SAM"],
@@ -270,7 +269,7 @@ else:
     binary_mask = make_binary_tumor_mask(mask)
     rgb_image = create_rgb_from_channels(image, channels=(0, 1, 2))
 
-    st.markdown('<div class="section-title">📁 H5 File Summary</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> H5 File Summary</div>', unsafe_allow_html=True)
 
     m1, m2, m3, m4 = st.columns(4)
 
@@ -303,7 +302,7 @@ else:
     else:
         st.image(normalize_to_uint8(image), caption="MRI Image", use_container_width=True)
 
-    st.markdown('<div class="section-title">🎯 Ground Truth Visualization</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> Ground Truth Visualization</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
 
@@ -318,14 +317,14 @@ else:
         st.image(gt_overlay, caption="Ground Truth Overlay", use_container_width=True)
 
     st.markdown("---")
-    st.markdown('<div class="section-title">🤖 Segmentation Comparison</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> Segmentation Comparison</div>', unsafe_allow_html=True)
 
     st.warning(
         "This web demo uses visual demo masks for interface presentation. "
         "The real quantitative model evaluation was performed in the final notebook."
     )
 
-    run_button = st.button("🚀 Run Segmentation Demo", use_container_width=True)
+    run_button = st.button(" Run Segmentation Demo", use_container_width=True)
 
     if run_button:
         if model_choice == "Compare All":
@@ -359,11 +358,11 @@ else:
             with model_cols[idx]:
                 st.image(display_img, caption=caption, use_container_width=True, clamp=True)
 
-        st.markdown('<div class="section-title">📈 Demo Metrics for Uploaded Slice</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title"> Demo Metrics for Uploaded Slice</div>', unsafe_allow_html=True)
         st.dataframe(pd.DataFrame(output_rows), use_container_width=True, hide_index=True)
 
     st.markdown("---")
-    st.markdown('<div class="section-title">📊 Final Notebook Model Comparison</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> Final Notebook Model Comparison</div>', unsafe_allow_html=True)
 
     st.dataframe(results_df, use_container_width=True, hide_index=True)
 
