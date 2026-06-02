@@ -248,7 +248,7 @@ if uploaded_h5 is None:
         <div class="info-card">
         <b>Interpretation:</b><br>
         U-Net achieved the highest Dice and IoU because it was trained directly on BraTS2020.
-        MedSAM-Optimized performed better than SAM, showing the benefit of medical domain adaptation.
+        MedSAM performed better than SAM, showing the benefit of medical domain adaptation.
         SAM had the lowest performance because it is a general-purpose segmentation model.
         </div>
         """,
@@ -371,7 +371,7 @@ else:
         <div class="info-card">
         <b>Notebook-based conclusion:</b><br>
         The final notebook results show that U-Net achieved the best overall performance.
-        MedSAM-Optimized was lower than U-Net but clearly better than SAM.
+        MedSAM was lower than U-Net but clearly better than SAM.
         Therefore, the hypothesis was partially supported: MedSAM improved over SAM,
         but did not outperform the supervised U-Net baseline.
         </div>
