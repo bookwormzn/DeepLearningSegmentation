@@ -366,15 +366,6 @@ else:
 
     st.dataframe(results_df, use_container_width=True, hide_index=True)
 
-    st.markdown(
-        """
-        <div class="info-card">
-        <b>Notebook-based conclusion:</b><br>
-        The final notebook results show that U-Net achieved the best overall performance.
-        MedSAM was lower than U-Net but clearly better than SAM.
-        Therefore, the hypothesis was partially supported: MedSAM improved over SAM,
-        but did not outperform the supervised U-Net baseline.
-        </div>
-        """,
+    
         unsafe_allow_html=True
     )
